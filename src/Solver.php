@@ -61,11 +61,15 @@ class Solver
      * @param  Problem  $problem Defined problem
      * @return Solution
      */
-    public function solve(Problem $problem)
+    public function solve(Problem $problem, array $options = [])
     {
         $lpsolve = lpsolve('make_lp', 0, $problem->countCols());
         lpsolve('set_verbose', $lpsolve, $this->verbose);
         lpsolve('set_obj_fn', $lpsolve, $problem->getObjective());
+
+        foreach ($options as $option => $value) {
+            lpsolve($option, $lpsolve, $value);
+        }
 
         foreach ($problem->getConstraints() as $constraint) {
             lpsolve(
